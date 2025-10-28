@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notcoin Miner — Simulation</title>
+  <style>
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;text-align:center;}
+    .card{background:rgba(255,255,255,0.05);padding:20px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 0 10px rgba(0,0,0,0.5);}
+    .btn{padding:10px 20px;margin:10px;background:#ffd166;color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
+    .ad{margin-top:20px;border:2px dashed rgba(255,255,255,0.3);padding:10px;border-radius:8px;color:#bbb;font-size:14px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🐹 Notcoin Miner Simulation</h1>
+    <p>यह सिर्फ एक डेमो पेज है — असली माइनिंग नहीं होती।</p>
+    <h2 id="balance">0.000000 NC</h2>
+    <button class="btn" id="mine">⛏️ Mine</button>
+    <p><a href="https://t.me/irf02004" target="_blank" style="color:#ffd166;text-decoration:none;">Join our Telegram Channel</a></p>
+
+    <div class="ad">
+      🔸 Ad Placeholder — Paste your Adsterra script here 🔸
+    </div>
+  </div>
+
+  <script>
+    let bal=0;let mining=false;
+    const balEl=document.getElementById('balance');
+    document.getElementById('mine').onclick=function(){
+      mining=!mining;this.textContent=mining?'Mining...':'⛏️ Mine';
+    };
+    setInterval(()=>{if(mining){bal+=(Math.random()*0.00001);balEl.textContent=bal.toFixed(6)+' NC';}},500);
+  </script>
+</body>
+</html>
