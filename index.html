@@ -4,33 +4,252 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Notcoin Miner — Simulation</title>
+  <meta name="description" content="Notcoin mining simulation — Earn visual rewards & view ads. Simulation only." />
   <style>
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;text-align:center;}
-    .card{background:rgba(255,255,255,0.05);padding:20px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 0 10px rgba(0,0,0,0.5);}
-    .btn{padding:10px 20px;margin:10px;background:#ffd166;color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
-    .ad{margin-top:20px;border:2px dashed rgba(255,255,255,0.3);padding:10px;border-radius:8px;color:#bbb;font-size:14px;}
+    :root {
+      --bg: linear-gradient(135deg,#0f172a,#071033);
+      --card: rgba(255,255,255,0.03);
+      --accent: #ffd166;
+      --muted: rgba(255,255,255,0.6);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;min-height:100%;background:var(--bg);color:#fff;
+      display:flex;align-items:center;justify-content:center;padding:24px;
+    }
+    .wrap{width:100%;max-width:980px}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+    .logo{
+      width:64px;height:64px;border-radius:12px;background:linear-gradient(45deg,#ffb703,#fb8500);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:#041b2d;font-size:26px;box-shadow:0 6px 18px rgba(0,0,0,0.4)
+    }
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:18px}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .balance{font-size:28px;font-weight:700;display:flex;gap:10px;align-items:center}
+    .small{color:var(--muted);font-size:13px}
+    .progress{height:14px;background:rgba(255,255,255,0.06);border-radius:10px;margin-top:12px;overflow:hidden}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,#ffd166,#ffb703);transition:width 400ms linear}
+    .controls{margin-top:14px;display:flex;gap:8px}
+    .btn{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,#ffd166,#ffb703);color:#041b2d;font-weight:700;border:none}
+    .statlist{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .stat{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;min-width:120px;text-align:center}
+    .coin-anim{width:120px;height:120px;border-radius:999px;background:conic-gradient(#ffd166 0 30%,rgba(255,255,255,0.06) 30% 100%);display:flex;align-items:center;justify-content:center;font-weight:800;color:#041b2d;font-size:18px;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+    footer{margin-top:12px;color:var(--muted);font-size:13px}
+    /* Responsive */
+    @media (max-width:880px){.grid{grid-template-columns:1fr} .coin-anim{display:none}}
+    /* Ad placeholder style */
+    .ad{margin-top:12px;border:2px dashed rgba(255,255,255,0.06);padding:12px;border-radius:8px;color:var(--muted);text-align:center}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🐹 Notcoin Miner Simulation</h1>
-    <p>यह सिर्फ एक डेमो पेज है — असली माइनिंग नहीं होती।</p>
-    <h2 id="balance">0.000000 NC</h2>
-    <button class="btn" id="mine">⛏️ Mine</button>
-    <p><a href="https://t.me/irf02004" target="_blank" style="color:#ffd166;text-decoration:none;">Join our Telegram Channel</a></p>
+  <div class="wrap">
+    <header>
+      <div class="logo">NC</div>
+      <div>
+        <h1>Notcoin Miner — Simulation</h1>
+        <p class="lead">Visual mining dashboard. Ads ke liye space diya gaya hai. <strong>Simulation only — real coin mining nahi.</strong></p>
+      </div>
+    </header>
 
-    <div class="ad">
-      🔸 Ad Placeholder — Paste your Adsterra script here 🔸
+    <div class="grid">
+      <!-- Main card -->
+      <div class="card">
+        <div class="balance">
+          <div id="balance">0.000000 NC</div>
+          <div class="small"> | Hashrate: <span id="hash">10 H/s</span></div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="bar" id="bar"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="mineBtn">Mine</button>
+          <button class="btn" id="boostBtn">Boost Speed (Ad)</button>
+          <button class="btn" id="withdrawBtn">Withdraw</button>
+        </div>
+
+        <div class="statlist">
+          <div class="stat">
+            <div class="small">Session Earned</div>
+            <div id="sessionEarn">0.000000 NC</div>
+          </div>
+          <div class="stat">
+            <div class="small">Total Earned</div>
+            <div id="totalEarn">0.000000 NC</div>
+          </div>
+          <div class="stat">
+            <div class="small">Referrals</div>
+            <div id="refs">0</div>
+          </div>
+        </div>
+
+        <!-- Ad placeholder (top) -->
+        <div class="ad" id="ad-top">
+          Ad Space — Yahan apna ad script ya banner daalein (Adsterra / Propeller / custom)
+        </div>
+
+        <section style="margin-top:12px">
+          <h3 style="margin:0 0 8px 0">How it works</h3>
+          <ol style="margin:0 0 8px 16px;color:var(--muted);font-size:14px">
+            <li>Ye ek visual simulation hai — coin real nahi milta.</li>
+            <li>"Mine" pe click karne se progress bar bharta hai aur balance increase hota hai.</li>
+            <li>"Boost Speed (Ad)" pe user ko ad dikhake temporary hashrate badha sakte ho (monetize).</li>
+          </ol>
+          <div class="small">Telegram Ref: <a href="#" id="tgLink" style="color:var(--accent);text-decoration:none">Join Notcoin Channel</a></div>
+        </section>
+
+        <footer>
+          <div class="small">Disclaimer: This page is for simulation & entertainment only. Ads aur links se revenue generate karna author ki responsibility hai.</div>
+        </footer>
+      </div>
+
+      <!-- Side card -->
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="coin-anim" id="coinAnim">NC</div>
+          <div>
+            <div class="small">Current Rate</div>
+            <div style="font-weight:700;font-size:20px">1 NC = 0.000001 USD (示例)</div>
+            <div class="small" style="margin-top:6px">Mining Power: <span id="power">10 H/s</span></div>
+          </div>
+        </div>
+
+        <!-- Ad placeholder (side) -->
+        <div class="ad" id="ad-side">
+          Side Ad — Paste your ad script here
+        </div>
+
+        <div style="margin-top:12px">
+          <h4 style="margin:0 0 6px 0">Upgrades</h4>
+          <div class="small">Upgrade mining power to increase gains. Paid upgrades can be affiliate links.</div>
+          <ul style="color:var(--muted);font-size:14px">
+            <li>Power Pack I — +5 H/s</li>
+            <li>Power Pack II — +20 H/s</li>
+            <li>VIP Booster — Temporary x2 speed (via offer)</li>
+          </ul>
+        </div>
+
+        <div class="ad" id="ad-bottom">
+          Bottom Ad / Banner
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    let bal=0;let mining=false;
-    const balEl=document.getElementById('balance');
-    document.getElementById('mine').onclick=function(){
-      mining=!mining;this.textContent=mining?'Mining...':'⛏️ Mine';
-    };
-    setInterval(()=>{if(mining){bal+=(Math.random()*0.00001);balEl.textContent=bal.toFixed(6)+' NC';}},500);
+    // ----------------------------
+    // Notcoin Mining Simulation JS
+    // ----------------------------
+    // IMPORTANT: This is purely visual simulation.
+    (function(){
+      const balanceEl = document.getElementById('balance');
+      const sessionEl = document.getElementById('sessionEarn');
+      const totalEl = document.getElementById('totalEarn');
+      const bar = document.getElementById('bar');
+      const hashEl = document.getElementById('hash');
+      const powerEl = document.getElementById('power');
+      const coinAnim = document.getElementById('coinAnim');
+      const tgLink = document.getElementById('tgLink');
+
+      // Configure initial simulation values
+      let balance = 0; // notcoin
+      let session = 0;
+      let total = 0;
+      let hashrate = 10; // H/s (visual)
+      let barPct = 0;
+      let mining = false;
+      let boostTimeout = null;
+
+      // Set your Telegram channel/ref link here
+      tgLink.href = "https://t.me/your_notcoin_channel"; // <- change to your channel
+
+      function formatNC(v){
+        return v.toFixed(6) + " NC";
+      }
+
+      function updateUI(){
+        balanceEl.textContent = formatNC(balance);
+        sessionEl.textContent = formatNC(session);
+        totalEl.textContent = formatNC(total);
+        hashEl.textContent = hashrate + " H/s";
+        powerEl.textContent = hashrate + " H/s";
+        bar.style.width = barPct + "%";
+        // coin rotation visualize
+        coinAnim.style.transform = "rotate(" + (Date.now()/50 % 360) + "deg)";
+      }
+
+      // mining tick simulates mining progress
+      function miningTick(){
+        if(!mining) return;
+        // progress rate depends on hashrate
+        const inc = (hashrate / 1000); // tune this to make speed nice
+        barPct = Math.min(100, barPct + inc);
+        // When bar reaches 100%, credit some coins
+        if(barPct >= 100){
+          const earned = (hashrate / 1000) * (0.5 + Math.random()*0.8); // randomize
+          balance += earned;
+          session += earned;
+          total += earned;
+          barPct = 0;
+        }
+        updateUI();
+      }
+
+      // start interval
+      setInterval(miningTick, 800);
+
+      // Mine button toggles mining
+      document.getElementById('mineBtn').addEventListener('click', function(){
+        mining = !mining;
+        this.textContent = mining ? "Mining..." : "Mine";
+        this.classList.toggle('primary', mining);
+      });
+
+      // Boost button: simulates showing an ad to increase speed temporarily
+      document.getElementById('boostBtn').addEventListener('click', function(){
+        // Here you should trigger your ad popup or rewarded ad. For demo:
+        // - Show ad (third-party), then on ad close/complete, increase speed.
+        // We'll simulate by opening a new tab (you can replace with ad code)
+        // window.open('https://your-ad-affiliate-link.example', '_blank');
+
+        // For monetization: integrate Adsterra/Propeller popup here.
+        // After ad is shown & user returns, call applyBoost();
+        applyBoost();
+      });
+
+      function applyBoost(){
+        // Give temporary boost
+        const original = hashrate;
+        hashrate = Math.round(hashrate * 2.5);
+        updateUI();
+        if(boostTimeout) clearTimeout(boostTimeout);
+        boostTimeout = setTimeout(()=>{
+          hashrate = original;
+          updateUI();
+        }, 22000); // 22 seconds boost
+      }
+
+      // Withdraw button: example behaviour - just resets session
+      document.getElementById('withdrawBtn').addEventListener('click', function(){
+        // In real product you'd process withdrawal (KYC, wallet etc). Here we reset session visually.
+        alert("Withdraw request simulated. Ye sirf demo hai — real withdrawal is not supported.");
+        session = 0;
+        updateUI();
+      });
+
+      // Update UI on load
+      updateUI();
+
+      // Load placeholder ads (optional)
+      // You can replace contents of #ad-top, #ad-side, #ad-bottom with ad network scripts.
+      // Example: document.getElementById('ad-top').innerHTML = '<script src="..."></script>';
+    })();
   </script>
 </body>
-</html>
+  </html>
